@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+
+# Environment variables
+.env*.local
+
+# Misc
+.DS_Store
+*.pem
+
+# Firebase
+*.log
