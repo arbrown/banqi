@@ -14,3 +14,4 @@ out/
 
 # Firebase
 *.log
+.firebase-emulator-data/
