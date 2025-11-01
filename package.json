@@ -1,0 +1,13 @@
+{
+  "name": "banqi-monorepo",
+  "private": true,
+  "workspaces": [
+    "app"
+  ],
+  "scripts": {
+    "dev": "concurrently \"firebase emulators:start\" \"npm run dev --workspace=app\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
