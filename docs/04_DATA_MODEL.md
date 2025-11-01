@@ -46,7 +46,7 @@ Each document in the `games` collection will have a `moves` sub-collection. This
 ```
 
 *   **Document Data:**
-    *   `type` (string): The type of action. Can be a piece move ("flip", "move", "capture") or a meta-event ("takeover", "swap").
+    *   `type` (string): The type of action. Can be a piece move ("flip", "move", "capture") or a meta-event ("takeover", "swap", "draw", "resign").
     *   `timestamp` (timestamp)
     *   ...other fields depending on the `type`.
 
@@ -65,3 +65,11 @@ Indicates a player has taken over a seat from another player or an AI.
 Indicates the players have swapped colors.
 *   `playerRedId` (string): The ID of the user who is now Red.
 *   `playerBlackId` (string): The ID of the user who is now Black.
+
+#### Meta-Event Type: `draw`
+Indicates the game has ended in a draw, either by agreement or rule.
+*   `timestamp` (timestamp)
+
+#### Meta-Event Type: `resign`
+Indicates a player has resigned, ending the game.
+*   `playerId` (string): The ID of the user who resigned.
