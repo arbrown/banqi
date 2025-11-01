@@ -5,7 +5,7 @@
     "app"
   ],
   "scripts": {
-    "dev": "concurrently \"firebase emulators:start\" \"npm run dev --workspace=app\""
+    "dev": "FIREBASE_AUTH_EMULATOR_HOST=\"localhost:9099\" concurrently \"firebase emulators:start\" \"npm run dev --workspace=app\""
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
