@@ -1,3 +1,5 @@
+import CreateGameButton from "@/components/CreateGameButton";
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -7,6 +9,7 @@ export default function Home() {
       <p className="mt-3 text-2xl">
         The game is under construction. Please log in to continue.
       </p>
+      <CreateGameButton />
     </div>
   );
 }
