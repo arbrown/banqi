@@ -59,6 +59,46 @@ export interface BoardState {
   faceDownPieces: Piece[];
 }
 
+export type NewMovePayload =
+  | {
+      type: 'flip';
+      position: BoardPosition;
+    }
+  | {
+      type: 'move';
+      from: BoardPosition;
+      to: BoardPosition;
+    }
+  | {
+      type: 'capture';
+      from: BoardPosition;
+      to: BoardPosition;
+    };
+
+export interface GameDocument {
+  playerRedId: string | null;
+  playerBlackId: string | null;
+  status: 'waiting' | 'in_progress' | 'finished';
+}
+
+export type ValidatedMove =
+  | {
+      type: 'flip';
+      position: BoardPosition;
+      piece: Piece;
+    }
+  | {
+      type: 'move';
+      from: BoardPosition;
+      to: BoardPosition;
+    }
+  | {
+      type: 'capture';
+      from: BoardPosition;
+      to: BoardPosition;
+      capturedPiece: Piece;
+    };
+
 export const isWithinBoard = ({ row, col }: BoardPosition): boolean =>
   row >= 0 && row < BANQI_ROWS && col >= 0 && col < BANQI_COLUMNS;
 

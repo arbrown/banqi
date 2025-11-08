@@ -7,18 +7,15 @@ import { reconstructBoardFromMoves } from '@/lib/banqi/state';
 import {
   BoardPosition,
   BoardState,
+  GameDocument,
   Move,
   MoveType,
+  NewMovePayload,
   Piece,
   PieceColor,
   PieceType,
 } from '@/lib/banqi/types';
-
-type GameDocument = {
-  playerRedId: string | null;
-  playerBlackId: string | null;
-  status: 'waiting' | 'in_progress' | 'finished';
-};
+import { BanqiValidationError, validateMove } from '@/lib/banqi/validation';
 
 const isString = (value: unknown): value is string => typeof value === 'string';
 
@@ -103,25 +100,7 @@ const parsePiece = (value: unknown, field: string): Piece => {
 const isMoveType = (value: unknown): value is MoveType =>
   typeof value === 'string' && ['flip', 'move', 'capture'].includes(value);
 
-type MovePayload =
-  | {
-      type: 'flip';
-      position: BoardPosition;
-      piece: Piece;
-    }
-  | {
-      type: 'move';
-      from: BoardPosition;
-      to: BoardPosition;
-    }
-  | {
-      type: 'capture';
-      from: BoardPosition;
-      to: BoardPosition;
-      capturedPiece: Piece;
-    };
-
-const parseMovePayload = (body: unknown): MovePayload => {
+const parseMovePayload = (body: unknown): NewMovePayload => {
   if (typeof body !== 'object' || body === null) {
     throw new ResponseError('Invalid request body', 400);
   }
@@ -137,7 +116,6 @@ const parseMovePayload = (body: unknown): MovePayload => {
       return {
         type,
         position: parsePosition((body as Record<string, unknown>).position, 'position'),
-        piece: parsePiece((body as Record<string, unknown>).piece, 'piece'),
       };
     case 'move':
       return {
@@ -150,7 +128,6 @@ const parseMovePayload = (body: unknown): MovePayload => {
         type,
         from: parsePosition((body as Record<string, unknown>).from, 'from'),
         to: parsePosition((body as Record<string, unknown>).to, 'to'),
-        capturedPiece: parsePiece((body as Record<string, unknown>).capturedPiece, 'capturedPiece'),
       };
     default:
       throw new ResponseError('Unsupported move type', 400);
@@ -274,34 +251,43 @@ export async function POST(
     const gameData = gameSnapshot.data() as GameDocument | undefined;
     ensureGameAccess(gameData, uid);
 
-    const movePayload = parseMovePayload(await request.json());
+    if (!gameData) {
+      throw new ResponseError('Game not found', 404);
+    }
 
-    const movesCollection = gameRef.collection('moves');
-    const latestMoveSnapshot = await movesCollection.orderBy('moveNumber', 'desc').limit(1).get();
-    const nextMoveNumber = latestMoveSnapshot.empty
-      ? 1
-      : (latestMoveSnapshot.docs[0].data().moveNumber ?? 0) + 1;
+    const movePayload = parseMovePayload(await request.json());
+    const existingMoves = await fetchMoves(params.id);
+    const boardState = reconstructBoardFromMoves(existingMoves);
+
+    const validatedMove = validateMove({
+      move: movePayload,
+      boardState,
+      game: gameData,
+      playerId: uid,
+    });
+
+    const nextMoveNumber = boardState.lastMoveNumber + 1;
 
     const moveDocument: Record<string, unknown> = {
       moveNumber: nextMoveNumber,
       playerId: uid,
-      type: movePayload.type,
+      type: validatedMove.type,
       createdAt: serverTimestamp(),
     };
 
-    if (movePayload.type === 'flip') {
-      moveDocument.position = movePayload.position;
-      moveDocument.piece = movePayload.piece;
-    } else if (movePayload.type === 'move') {
-      moveDocument.from = movePayload.from;
-      moveDocument.to = movePayload.to;
-    } else if (movePayload.type === 'capture') {
-      moveDocument.from = movePayload.from;
-      moveDocument.to = movePayload.to;
-      moveDocument.capturedPiece = movePayload.capturedPiece;
+    if (validatedMove.type === 'flip') {
+      moveDocument.position = validatedMove.position;
+      moveDocument.piece = validatedMove.piece;
+    } else if (validatedMove.type === 'move') {
+      moveDocument.from = validatedMove.from;
+      moveDocument.to = validatedMove.to;
+    } else if (validatedMove.type === 'capture') {
+      moveDocument.from = validatedMove.from;
+      moveDocument.to = validatedMove.to;
+      moveDocument.capturedPiece = validatedMove.capturedPiece;
     }
 
-    await movesCollection.add(moveDocument);
+    await gameRef.collection('moves').add(moveDocument);
 
     const gameUpdates: Record<string, unknown> = {
       updatedAt: new Date().toISOString(),
@@ -318,6 +304,9 @@ export async function POST(
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
     if (error instanceof ResponseError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+    if (error instanceof BanqiValidationError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
     }
     console.error('Failed to record move', error);

@@ -11,7 +11,7 @@
 ## Milestone 2: Core Game Logic
 
 *   [x] Persist Banqi game state by recording moves in `games/{id}/moves` and reconstructing board state.
-*   [ ] Implement move validation and rule enforcement service.
+*   [x] Implement move validation and rule enforcement service.
 *   [ ] Add player seat management (join, switch colors, ready-up) backed by Firestore.
 *   [ ] Subscribe to Firestore real-time updates for active games in both client and server contexts.
 

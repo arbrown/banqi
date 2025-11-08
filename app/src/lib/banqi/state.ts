@@ -1,4 +1,4 @@
-import { BANQI_COLUMNS, BANQI_ROWS, PIECE_COLORS } from './constants';
+import { BANQI_COLUMNS, BANQI_ROWS, PIECE_COLORS, PIECE_COUNTS } from './constants';
 import {
   BoardCell,
   BoardPosition,
@@ -14,16 +14,6 @@ import {
 
 const makeUnknownCell = (): BoardCell => ({ kind: 'unknown' });
 const makeEmptyCell = (): BoardCell => ({ kind: 'empty' });
-
-const PIECE_COUNTS: Record<PieceType, number> = {
-  king: 1,
-  guard: 2,
-  elephant: 2,
-  cart: 2,
-  horse: 2,
-  pawn: 5,
-  cannon: 2,
-};
 
 const createInitialPiecePool = (): Piece[] => {
   const pool: Piece[] = [];
