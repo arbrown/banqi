@@ -21,7 +21,7 @@ There are two colors: Red and Black. Each player has 16 pieces. The pieces are i
 | King     | k   | K     | 7    |
 | General  | g   | G     | 6    |
 | Elephant | e   | E     | 5    |
-| Chariot  | c   | C     | 4    |
+| Cart     | c   | C     | 4    |
 | Horse    | h   | H     | 3    |
 | Pawn     | p   | P     | 2    |
 | Cannon   | q   | Q     | 1    |
@@ -42,15 +42,15 @@ There are two colors: Red and Black. Each player has 16 pieces. The pieces are i
 
 The capture hierarchy is as follows, represented by a `canAttack(attacker, defender)` matrix:
 
-| Attacker | King | General | Elephant | Chariot | Horse | Pawn | Cannon |
-| :--- | :--: | :-----: | :------: | :-----: | :---: | :---: | :----: |
-| **King**     |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ❌    |   ✅   |
-| **General**  |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
-| **Elephant** |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
-| **Chariot**  |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
-| **Horse**    |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
-| **Pawn**     |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
-| **Cannon**   |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
+| Attacker | King | General | Elephant | Cart | Horse | Pawn | Cannon |
+| :--- | :--: | :-----: | :------: | :--: | :---: | :---: | :----: |
+| **King**     |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ❌    |   ✅   |
+| **General**  |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
+| **Elephant** |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
+| **Cart**     |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
+| **Horse**    |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
+| **Pawn**     |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
+| **Cannon**   |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
 
 *(Note: This table shows that most pieces can attack most other pieces. The primary restriction is that a lower-ranked piece cannot attack a higher-ranked piece, with the exceptions noted above.)*
 
