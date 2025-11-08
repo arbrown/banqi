@@ -14,7 +14,5 @@ out/
 
 # Firebase
 *.log
-.firebase-emulator-data/
-
-# Pao
-pao/
+.firebase-emulator-data/app/.next/
+app/node_modules/
