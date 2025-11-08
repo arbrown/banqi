@@ -75,11 +75,26 @@ export type NewMovePayload =
       to: BoardPosition;
     };
 
+export interface GamePlayer {
+  id: string;
+  ready: boolean;
+  joinedAt: string;
+}
+
 export interface GameDocument {
+  players: GamePlayer[];
   playerRedId: string | null;
   playerBlackId: string | null;
+  firstPlayerId: string | null;
+  currentTurn: string | null;
   status: 'waiting' | 'in_progress' | 'finished';
+  createdAt?: string;
+  updatedAt?: string;
+  lastMoveNumber?: number;
+  winner?: string | null;
 }
+
+export type SeatColor = 'red' | 'black';
 
 export type ValidatedMove =
   | {

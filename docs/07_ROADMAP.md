@@ -12,7 +12,7 @@
 
 *   [x] Persist Banqi game state by recording moves in `games/{id}/moves` and reconstructing board state.
 *   [x] Implement move validation and rule enforcement service.
-*   [ ] Add player seat management (join, switch colors, ready-up) backed by Firestore.
+*   [x] Add player seat management (join, readiness, first-move color assignment) backed by Firestore.
 *   [ ] Subscribe to Firestore real-time updates for active games in both client and server contexts.
 
 ## Milestone 3: Frontend Implementation

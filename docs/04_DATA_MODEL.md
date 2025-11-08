@@ -27,11 +27,18 @@ This collection will store metadata for each game.
 ```
 
 *   **Document Data:**
-    *   `playerRedId` (string, foreign key to `users` collection)
-    *   `playerBlackId` (string, foreign key to `users` collection)
+    *   `players` (array): Ordered list of seated players. Each entry contains:
+        *   `id` (string)
+        *   `ready` (boolean)
+        *   `joinedAt` (timestamp)
+    *   `playerRedId` (string | null): Assigned after the first flip reveals a red piece.
+    *   `playerBlackId` (string | null): Assigned after the first flip reveals a black piece.
+    *   `firstPlayerId` (string | null): The player who made the first move.
+    *   `currentTurn` (string | null): Which player is expected to act next once turns are enforced.
     *   `status` (string: "waiting" | "in_progress" | "finished")
     *   `winner` (string: "red" | "black" | "draw") (optional)
-    *   `createdAt` (timestamp)
+    *   `createdAt` / `updatedAt` (timestamps)
+    *   `lastMoveNumber` (number)
     *   `forkInfo` (object, optional): Information about the game's origin if it was forked.
         *   `rootGameId` (string)
         *   `rootGameMoveNumber` (number)
@@ -54,17 +61,6 @@ Each document in the `games` collection will have a `moves` sub-collection. This
 *   `piece` (string): The piece that was moved (e.g., "K", "P", "Q").
 *   `from` (string): The starting coordinate (e.g., "a1").
 *   `to` (string): The ending coordinate (e.g., "a2").
-
-#### Meta-Event Type: `takeover`
-Indicates a player has taken over a seat from another player or an AI.
-*   `seat` (string): "red" | "black"
-*   `previousPlayerId` (string)
-*   `newPlayerId` (string)
-
-#### Meta-Event Type: `swap`
-Indicates the players have swapped colors.
-*   `playerRedId` (string): The ID of the user who is now Red.
-*   `playerBlackId` (string): The ID of the user who is now Black.
 
 #### Meta-Event Type: `draw`
 Indicates the game has ended in a draw, either by agreement or rule.

@@ -19,10 +19,35 @@ const createBaseState = (overrides: Partial<BoardState> = {}): BoardState => ({
   ...overrides,
 });
 
-const defaultGame: GameDocument = {
-  playerRedId: 'player-red',
-  playerBlackId: 'player-black',
-  status: 'in_progress',
+const createGameDoc = (overrides: Partial<GameDocument> = {}): GameDocument => {
+  const basePlayers = [
+    { id: 'player-red', ready: false, joinedAt: '2024-01-01T00:00:00.000Z' },
+    { id: 'player-black', ready: false, joinedAt: '2024-01-01T00:00:00.000Z' },
+  ];
+
+  const game: GameDocument = {
+    players: basePlayers,
+    playerRedId: 'player-red',
+    playerBlackId: 'player-black',
+    firstPlayerId: 'player-red',
+    currentTurn: 'player-black',
+    status: 'in_progress',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+    lastMoveNumber: 0,
+    winner: null,
+    ...overrides,
+  };
+
+  if (overrides.players) {
+    game.players = overrides.players.map((player) => ({
+      id: player.id,
+      ready: Boolean(player.ready),
+      joinedAt: player.joinedAt ?? '2024-01-01T00:00:00.000Z',
+    }));
+  }
+
+  return game;
 };
 
 const setPiece = (state: BoardState, position: { row: number; col: number }, piece: Piece) => {
@@ -52,7 +77,7 @@ describe('validateMove', () => {
       const result = validateMove({
         move,
         boardState: state,
-        game: defaultGame,
+        game: createGameDoc(),
         playerId: 'player-red',
       });
 
@@ -83,7 +108,7 @@ describe('validateMove', () => {
       const result = validateMove({
         move,
         boardState: state,
-        game: defaultGame,
+        game: createGameDoc(),
         playerId: 'player-red',
       });
 
@@ -110,7 +135,7 @@ describe('validateMove', () => {
         validateMove({
           move,
           boardState: state,
-          game: defaultGame,
+          game: createGameDoc(),
           playerId: 'player-red',
         }),
       ).toThrow(new BanqiValidationError('No remaining face-down pieces to reveal'));
@@ -132,7 +157,7 @@ describe('validateMove', () => {
       const result = validateMove({
         move,
         boardState: state,
-        game: defaultGame,
+        game: createGameDoc(),
         playerId: 'player-red',
       });
 
@@ -154,7 +179,7 @@ describe('validateMove', () => {
         validateMove({
           move,
           boardState: state,
-          game: defaultGame,
+          game: createGameDoc(),
           playerId: 'player-red',
         }),
       ).toThrow(new BanqiValidationError('Cannot move an opponent piece', 403));
@@ -175,7 +200,7 @@ describe('validateMove', () => {
         validateMove({
           move,
           boardState: state,
-          game: defaultGame,
+          game: createGameDoc(),
           playerId: 'player-red',
         }),
       ).toThrow(new BanqiValidationError('Pieces move one square orthogonally'));
@@ -210,7 +235,7 @@ describe('validateMove', () => {
       const result = validateMove({
         move,
         boardState: state,
-        game: defaultGame,
+        game: createGameDoc(),
         playerId: 'player-red',
       });
 
@@ -238,7 +263,7 @@ describe('validateMove', () => {
         validateMove({
           move,
           boardState: state,
-          game: defaultGame,
+          game: createGameDoc(),
           playerId: 'player-red',
         }),
       ).toThrow(new BanqiValidationError('Attacking piece cannot capture the defender'));
@@ -260,7 +285,7 @@ describe('validateMove', () => {
       const result = validateMove({
         move,
         boardState: state,
-        game: defaultGame,
+        game: createGameDoc(),
         playerId: 'player-red',
       });
 
@@ -289,7 +314,7 @@ describe('validateMove', () => {
         validateMove({
           move,
           boardState: state,
-          game: defaultGame,
+          game: createGameDoc(),
           playerId: 'player-red',
         }),
       ).toThrow(new BanqiValidationError('Cannons must jump over exactly one piece to capture'));
@@ -313,7 +338,7 @@ describe('validateMove', () => {
         validateMove({
           move,
           boardState: state,
-          game: defaultGame,
+          game: createGameDoc(),
           playerId: 'player-red',
         }),
       ).toThrow(new BanqiValidationError('Pieces capture by moving one square orthogonally'));
@@ -335,7 +360,7 @@ describe('validateMove', () => {
         validateMove({
           move,
           boardState: state,
-          game: defaultGame,
+          game: createGameDoc(),
           playerId: 'player-red',
         }),
       ).toThrow(new BanqiValidationError('Cannot capture your own piece'));

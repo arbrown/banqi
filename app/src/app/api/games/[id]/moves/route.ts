@@ -5,6 +5,13 @@ import { adminAuth, adminFirestore, serverTimestamp } from '@/lib/firebase-admin
 import { BANQI_COLUMNS, BANQI_ROWS, PIECE_COLORS, PIECE_TYPES } from '@/lib/banqi/constants';
 import { reconstructBoardFromMoves } from '@/lib/banqi/state';
 import {
+  assignColorsFromFirstFlip,
+  findPlayer,
+  hasTwoPlayers,
+  nextTurnFor,
+  sanitizeGameDocument,
+} from '@/lib/banqi/game';
+import {
   BoardPosition,
   BoardState,
   GameDocument,
@@ -51,16 +58,18 @@ class ResponseError extends Error {
   }
 }
 
-const ensureGameAccess = (game: GameDocument | undefined, uid: string) => {
+const ensureGameAccess = (game: GameDocument | undefined, uid: string): GameDocument => {
   if (!game) {
     throw new ResponseError('Game not found', 404);
   }
-  if (game.status === 'finished') {
+  const sanitized = sanitizeGameDocument(game);
+  if (sanitized.status === 'finished') {
     throw new ResponseError('Game is already finished', 409);
   }
-  if (game.playerRedId !== uid && game.playerBlackId !== uid) {
+  if (!findPlayer(sanitized, uid)) {
     throw new ResponseError('Forbidden', 403);
   }
+  return sanitized;
 };
 
 const isValidPieceType = (value: unknown): value is PieceType =>
@@ -248,11 +257,21 @@ export async function POST(
     const uid = await authenticateRequest(request);
     const gameRef = adminFirestore.collection('games').doc(params.id);
     const gameSnapshot = await gameRef.get();
-    const gameData = gameSnapshot.data() as GameDocument | undefined;
-    ensureGameAccess(gameData, uid);
+    const gameData = ensureGameAccess(gameSnapshot.data() as GameDocument | undefined, uid);
 
     if (!gameData) {
       throw new ResponseError('Game not found', 404);
+    }
+
+    if (!hasTwoPlayers(gameData)) {
+      throw new ResponseError('Waiting for an opponent before starting the game', 409);
+    }
+
+    if (gameData.firstPlayerId) {
+      const expectedTurn = gameData.currentTurn ?? nextTurnFor(gameData, gameData.firstPlayerId);
+      if (expectedTurn && expectedTurn !== uid) {
+        throw new ResponseError('It is not your turn', 409);
+      }
     }
 
     const movePayload = parseMovePayload(await request.json());
@@ -293,7 +312,33 @@ export async function POST(
       updatedAt: new Date().toISOString(),
       lastMoveNumber: nextMoveNumber,
     };
-    if (gameData?.status === 'waiting') {
+    if (!gameData.firstPlayerId) {
+      if (validatedMove.type !== 'flip') {
+        throw new ResponseError('The first move of the game must flip a piece', 400);
+      }
+      const { playerRedId, playerBlackId } = assignColorsFromFirstFlip(
+        gameData,
+        uid,
+        validatedMove.piece.color,
+      );
+      const nextPlayer = nextTurnFor(gameData, uid);
+      gameData.firstPlayerId = uid;
+      gameData.currentTurn = nextPlayer;
+      gameUpdates.firstPlayerId = uid;
+      gameUpdates.playerRedId = playerRedId;
+      gameUpdates.playerBlackId = playerBlackId;
+      if (nextPlayer) {
+        gameUpdates.currentTurn = nextPlayer;
+      }
+    } else {
+      const nextPlayer = nextTurnFor(gameData, uid);
+      gameData.currentTurn = nextPlayer;
+      if (nextPlayer) {
+        gameUpdates.currentTurn = nextPlayer;
+      }
+    }
+
+    if (gameData.status === 'waiting') {
       gameUpdates.status = 'in_progress';
     }
     await gameRef.update(gameUpdates);

@@ -12,12 +12,22 @@ export async function POST(req: NextRequest) {
     const decodedToken = await adminAuth.verifyIdToken(idToken);
     const uid = decodedToken.uid;
 
+    const now = new Date().toISOString();
     const newGame = {
-      playerRedId: uid,
+      players: [
+        {
+          id: uid,
+          ready: false,
+          joinedAt: now,
+        },
+      ],
+      playerRedId: null,
       playerBlackId: null,
+      firstPlayerId: null,
+      currentTurn: null,
       status: 'waiting',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
       lastMoveNumber: 0,
       winner: null,
     };
