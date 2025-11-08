@@ -2,22 +2,25 @@
 
 ## Milestone 1: Project Setup & Backend Foundation
 
-*   [ ] Initialize project repository.
-*   [ ] Set up backend with Node.js, TypeScript, and Express/Fastify.
-*   [ ] Implement user authentication (registration and login).
-*   [ ] Define database schema and set up database connection.
+*   [x] Initialize the monorepo with the `app` Next.js workspace and shared tooling.
+*   [x] Configure Firebase client and admin SDKs (Auth + Firestore) for local and deployed environments.
+*   [x] Implement Firebase Auth flows (Google sign-in and guest) with Zustand-backed user state.
+*   [x] Create authenticated `POST /api/games` API route that persists new games to Firestore.
+*   [ ] Harden Firestore security rules and expand local emulator coverage.
 
 ## Milestone 2: Core Game Logic
 
-*   [ ] Implement WebSocket server for real-time communication.
-*   [ ] Implement core game logic on the backend (game creation, state management, move validation).
+*   [x] Persist Banqi game state by recording moves in `games/{id}/moves` and reconstructing board state.
+*   [ ] Implement move validation and rule enforcement service.
+*   [ ] Add player seat management (join, switch colors, ready-up) backed by Firestore.
+*   [ ] Subscribe to Firestore real-time updates for active games in both client and server contexts.
 
 ## Milestone 3: Frontend Implementation
 
-*   [ ] Set up React frontend with TypeScript.
-*   [ ] Implement game lobby UI.
-*   [ ] Implement main game UI (board, pieces, etc.).
-*   [ ] Connect frontend to backend via WebSockets.
+*   [x] Scaffold Next.js App Router layout, global styles, and authenticated home screen.
+*   [ ] Implement game lobby UI (list available games, join seats).
+*   [ ] Build interactive game board UI with piece interactions and move feedback.
+*   [ ] Integrate client-side listeners for real-time game updates.
 
 ## Milestone 4: Additional Features & Polish
 

@@ -19,7 +19,7 @@ There are two colors: Red and Black. Each player has 16 pieces. The pieces are i
 | Piece    | Red | Black | Rank |
 | :------- | :-- | :---- | :--- |
 | King     | k   | K     | 7    |
-| General  | g   | G     | 6    |
+| Guard    | g   | G     | 6    |
 | Elephant | e   | E     | 5    |
 | Cart     | c   | C     | 4    |
 | Horse    | h   | H     | 3    |
@@ -42,10 +42,10 @@ There are two colors: Red and Black. Each player has 16 pieces. The pieces are i
 
 The capture hierarchy is as follows, represented by a `canAttack(attacker, defender)` matrix:
 
-| Attacker | King | General | Elephant | Cart | Horse | Pawn | Cannon |
-| :--- | :--: | :-----: | :------: | :--: | :---: | :---: | :----: |
+| Attacker | King | Guard | Elephant | Cart | Horse | Pawn | Cannon |
+| :---         | :--: | :-----: | :------: | :--: | :---: | :---: | :----: |
 | **King**     |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ❌    |   ✅   |
-| **General**  |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
+| **Guard**    |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
 | **Elephant** |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
 | **Cart**     |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |
 | **Horse**    |  ✅  |    ✅   |    ✅    |  ✅  |  ✅   |   ✅    |   ✅   |

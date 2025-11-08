@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
       playerBlackId: null,
       status: 'waiting',
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      lastMoveNumber: 0,
       winner: null,
     };
 

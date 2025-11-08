@@ -17,7 +17,7 @@ Ban Qi is a Chinese chess variant played on a 4x8 board. The game is for two pla
     *   The Cannon moves differently when capturing.
 *   **Capturing:**
     *   A piece can capture an opponent's piece if the capturing piece has a higher or equal rank.
-    *   The King/General can capture the Pawn, but the Pawn can capture the King/General.
+    *   The King can capture the Pawn, but the Pawn can capture the King.
     *   The Cannon captures by jumping over a single piece (of any color) in a straight line to land on an opponent's piece.
 *   **Winning:** A player wins when the opponent has no legal moves left.
 
@@ -25,13 +25,13 @@ Ban Qi is a Chinese chess variant played on a 4x8 board. The game is for two pla
 
 The pieces are ranked as follows, from highest to lowest:
 
-1.  **King/General (K)**
-2.  **Guard/Advisor (G)**
-3.  **Elephant/Minister (E)**
-4.  **Cart/Chariot (C)**
-5.  **Horse/Knight (H)**
-6.  **Pawn/Soldier (P)**
-7.  **Cannon (Q)**
+1.  **King (K/k)**
+2.  **Guard (G/g)**
+3.  **Elephant (E/e)**
+4.  **Cart (C/c)**
+5.  **Horse (H/h)**
+6.  **Pawn (P/p)**
+7.  **Cannon (Q/q)**
 
 Each player has:
 *   1 King
