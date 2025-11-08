@@ -23,7 +23,7 @@ There are two colors: Red and Black. Each player has 16 pieces. The pieces are i
 | Elephant | e   | E     | 5    |
 | Chariot  | c   | C     | 4    |
 | Horse    | h   | H     | 3    |
-| Soldier  | p   | P     | 2    |
+| Pawn     | p   | P     | 2    |
 | Cannon   | q   | Q     | 1    |
 
 - **Unflipped Piece:** `?`
@@ -34,30 +34,30 @@ There are two colors: Red and Black. Each player has 16 pieces. The pieces are i
 - The rank of the pieces determines which pieces can capture which other pieces.
 - A higher-ranking piece can capture a lower-ranking piece.
 - Pieces of the same rank can capture each other.
-- **Exception 1: The King and the Soldier**
-  - The King (rank 7) is the highest-ranking piece, but it cannot capture a Soldier (rank 2).
-  - A Soldier, however, can capture the King.
+- **Exception 1: The King and the Pawn**
+  - The King (rank 7) is the highest-ranking piece, but it cannot capture a Pawn (rank 2).
+  - A Pawn, however, can capture the King.
 - **Exception 2: The Cannon**
   - The Cannon (rank 1) has a special capture rule (see below).
 
 The capture hierarchy is as follows, represented by a `canAttack(attacker, defender)` matrix:
 
-| Attacker | King | General | Elephant | Chariot | Horse | Soldier | Cannon |
-| :--- | :--: | :-----: | :------: | :-----: | :---: | :-----: | :----: |
+| Attacker | King | General | Elephant | Chariot | Horse | Pawn | Cannon |
+| :--- | :--: | :-----: | :------: | :-----: | :---: | :---: | :----: |
 | **King**     |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ❌    |   ✅   |
 | **General**  |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
 | **Elephant** |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
 | **Chariot**  |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
 | **Horse**    |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
-| **Soldier**  |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
+| **Pawn**     |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
 | **Cannon**   |  ✅  |    ✅   |    ✅    |    ✅   |  ✅   |   ✅    |   ✅   |
 
 *(Note: This table shows that most pieces can attack most other pieces. The primary restriction is that a lower-ranked piece cannot attack a higher-ranked piece, with the exceptions noted above.)*
 
 A more precise representation of the attack logic is:
 - A piece `A` can capture a piece `B` if `rank(A) >= rank(B)`, with the following exceptions:
-  - If `A` is a Soldier (Pawn) and `B` is a King, `A` can capture `B`.
-  - If `A` is a King and `B` is a Soldier (Pawn), `A` cannot capture `B`.
+  - If `A` is a Pawn and `B` is a King, `A` can capture `B`.
+  - If `A` is a King and `B` is a Pawn, `A` cannot capture `B`.
 - Cannons follow a different set of rules for movement and capture.
 
 ## 4. Gameplay
